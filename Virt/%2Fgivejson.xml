@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:restMockAction name="/givejson" method="GET" resourcePath="/givejson" id="a7c4530a-b464-4c22-962d-0ad484fd819f" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="a7c4530a-b464-4c22-962d-0ad484fd819ffileName">%2Fgivejson</con:setting></con:settings><con:dispatchStyle>SEQUENCE</con:dispatchStyle><con:dispatchConfig/><con:dispatchXPath/><con:routeScript/><con:response name="Response 1" id="5c614fa7-22c3-470a-8d5d-59112a5559b3" httpResponseStatus="200" mediaType="application/json" dataSource=""><con:settings/><con:responseContent>{
+	"payoutamount": 100.00,
+	"Payoutcount": 5,
+	"Loss": ""
+}	
+</con:responseContent></con:response></con:restMockAction>
