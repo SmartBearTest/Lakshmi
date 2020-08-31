@@ -1,0 +1,463 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "Data Buffet API",
+    "description" : "API access to Moody's Analytics repository of international and subnational\neconomic and demographic time series data.\n\nTo acquire your client_id and client_secret, visit [https://www.economy.com/myeconomy/api-key-info](https://www.economy.com/myeconomy/api-key-info). \nIf you are not registered, you can register for a free account to retrieve your keys\n\nFor more info, see the\n[documentation](https://github.com/moodysanalytics/databuffet.api.codesamples/blob/master/dataBuffet-api-userguide.md#retrieve-a-single-series)\n",
+    "contact" : {
+      "email" : "maa@moodys.com"
+    },
+    "license" : {
+      "name" : "More Info",
+      "url" : "https://github.com/moodysanalytics/databuffet.api.codesamples"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://api.moodysanalytics.com/databuffet/api/v1"
+  } ],
+  "tags" : [ {
+    "name" : "DataBuffet",
+    "description" : "Edge Product"
+  } ],
+  "paths" : {
+    "/oauth2/token" : {
+      "post" : {
+        "summary" : "Returns a Bearer token for access to the rest of the APIs in this spec.",
+        "description" : "Retrieves an access token for the subsequent requests",
+        "operationId" : "oauth2_token",
+        "requestBody" : {
+          "content" : {
+            "application/x-www-form-urlencoded" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ClientCredentialsBody"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/OAuthSuccess"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ]
+      }
+    },
+    "/frequencies" : {
+      "get" : {
+        "tags" : [ "Frequency" ],
+        "summary" : "Returns a JSON list of frequencies.",
+        "description" : "Returns a list of frequencies",
+        "operationId" : "Frequency_Index",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/FrequencyInfo"
+                  },
+                  "x-content-type" : "application/json"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "ApiKeyAuth" : [ ],
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/health" : {
+      "get" : {
+        "tags" : [ "HealthCheck" ],
+        "description" : "Returns the status of DataBuffet Services",
+        "operationId" : "HealthCheck_HealthCheck",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "x-content-type" : "application/json"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "ApiKeyAuth" : [ ],
+          "BearerAuth" : [ ]
+        } ]
+      }
+    },
+    "/series" : {
+      "get" : {
+        "tags" : [ "Series" ],
+        "summary" : "Returns series data formatted in JSON.",
+        "description" : "For more info, see https://github.com/moodysanalytics/databuffet.api.codesamples/blob/master/dataBuffet-api-userguide.md#retrieve-a-single-series",
+        "operationId" : "Series_Get",
+        "parameters" : [ {
+          "name" : "m",
+          "in" : "query",
+          "description" : "The data series code (mnemonic) that is being requested.",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "freq",
+          "in" : "query",
+          "description" : "Converts the data series to another frequency.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "enum" : [ 0, 16, 49, 50, 65, 66, 67, 68, 69, 70, 71, 80, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 112, 128, 155, 156, 170, 171, 172, 183, 184, 185, 186, 187, 188, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204 ]
+          }
+        }, {
+          "name" : "trans",
+          "in" : "query",
+          "description" : "Performs a mathematical transformation on the data.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "enum" : [ 0, 1, 2, 3, 4, 8 ]
+          }
+        }, {
+          "name" : "conv",
+          "in" : "query",
+          "description" : "Conversion technique to use when performing frequency conversion.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32",
+            "enum" : [ 0, 1, 2, 3 ]
+          }
+        }, {
+          "name" : "startDate",
+          "in" : "query",
+          "description" : "Start of data series. YYYY-MM-DD format.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "endDate",
+          "in" : "query",
+          "description" : "End of data series. YYYY-MM-DD format.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DataSeriesResult"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "ApiKeyAuth" : [ ],
+          "BearerAuth" : [ ]
+        } ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "ClientCredentialsBody" : {
+        "type" : "object",
+        "properties" : {
+          "client_id" : {
+            "type" : "string",
+            "description" : "client Id"
+          },
+          "client_secret" : {
+            "type" : "string",
+            "description" : "client client_secret"
+          },
+          "grant_type" : {
+            "type" : "string",
+            "description" : "currently supported grant_type is client_credentials",
+            "enum" : [ "client_credentials" ]
+          }
+        },
+        "description" : "request body for oauth token request"
+      },
+      "OAuthSuccess" : {
+        "type" : "object",
+        "properties" : {
+          "token_type" : {
+            "type" : "string",
+            "description" : "token type"
+          },
+          "access_token" : {
+            "type" : "string",
+            "description" : "access token"
+          },
+          "expires_in" : {
+            "type" : "integer",
+            "description" : "time to expiry"
+          }
+        },
+        "description" : "contains token information",
+        "example" : {
+          "access_token" : "access_token",
+          "token_type" : "token_type",
+          "expires_in" : 0
+        }
+      },
+      "FrequencyInfo" : {
+        "type" : "object",
+        "properties" : {
+          "frequencyId" : {
+            "type" : "integer",
+            "description" : "Frequency Id",
+            "format" : "int32"
+          },
+          "frequencyName" : {
+            "type" : "string",
+            "description" : "Frequency Name"
+          }
+        },
+        "description" : "Frequency Info",
+        "example" : {
+          "frequencyId" : 0,
+          "frequencyName" : "frequencyName"
+        }
+      },
+      "DataSeriesResult" : {
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "$ref" : "#/components/schemas/DataSeries"
+          },
+          "mnemonic" : {
+            "type" : "string"
+          },
+          "concept" : {
+            "type" : "string"
+          },
+          "geoCode" : {
+            "type" : "string"
+          },
+          "geoTitle" : {
+            "type" : "string"
+          },
+          "fipCode" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "source" : {
+            "type" : "string"
+          },
+          "databank" : {
+            "type" : "string"
+          },
+          "freqCode" : {
+            "type" : "string"
+          },
+          "observedAttribute" : {
+            "type" : "string"
+          },
+          "startDate" : {
+            "type" : "string"
+          },
+          "endDate" : {
+            "type" : "string"
+          },
+          "lastHistory" : {
+            "type" : "string"
+          },
+          "dateCreated" : {
+            "type" : "string"
+          },
+          "dateUpdated" : {
+            "type" : "string"
+          },
+          "dateExecuted" : {
+            "type" : "string"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          }
+        },
+        "example" : {
+          "data" : {
+            "data" : [ 5.962133916683182, 5.962133916683182 ],
+            "freqCode" : 0,
+            "freq" : "freq",
+            "start" : 6,
+            "periods" : 1,
+            "startDate" : "startDate"
+          },
+          "endDate" : "endDate",
+          "concept" : "concept",
+          "fipCode" : "fipCode",
+          "geoCode" : "geoCode",
+          "description" : "description",
+          "source" : "source",
+          "error" : "error",
+          "geoTitle" : "geoTitle",
+          "dateExecuted" : "dateExecuted",
+          "databank" : "databank",
+          "dateUpdated" : "dateUpdated",
+          "lastHistory" : "lastHistory",
+          "dateCreated" : "dateCreated",
+          "freqCode" : "freqCode",
+          "mnemonic" : "mnemonic",
+          "observedAttribute" : "observedAttribute",
+          "startDate" : "startDate",
+          "status" : "status"
+        }
+      },
+      "DataSeries" : {
+        "type" : "object",
+        "properties" : {
+          "freq" : {
+            "type" : "string"
+          },
+          "startDate" : {
+            "type" : "string"
+          },
+          "freqCode" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "start" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "periods" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "type" : "number",
+              "format" : "double"
+            }
+          }
+        },
+        "example" : {
+          "data" : [ 5.962133916683182, 5.962133916683182 ],
+          "freqCode" : 0,
+          "freq" : "freq",
+          "start" : 6,
+          "periods" : 1,
+          "startDate" : "startDate"
+        }
+      },
+      "Error" : {
+        "type" : "object",
+        "properties" : {
+          "error" : {
+            "$ref" : "#/components/schemas/Error_error"
+          }
+        }
+      },
+      "Error_error" : {
+        "type" : "object",
+        "properties" : {
+          "message" : {
+            "type" : "string"
+          },
+          "details" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "responses" : {
+      "Unauthorized" : {
+        "description" : "Unauthorized",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes" : {
+      "ApiKeyAuth" : {
+        "type" : "apiKey",
+        "name" : "apikey",
+        "in" : "query"
+      },
+      "BearerAuth" : {
+        "type" : "http",
+        "scheme" : "bearer"
+      }
+    }
+  }
+}
